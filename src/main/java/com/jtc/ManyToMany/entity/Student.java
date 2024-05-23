@@ -21,7 +21,9 @@ public class Student {
     private long studentId;
     @Column(name = "student_name")
     private String studentName;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Column(nullable = false)
+    private String studentPassword;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = " student_teacher",joinColumns = {@JoinColumn(name = "student_id")},
             inverseJoinColumns = {@JoinColumn(name="teacher_id")})
     private Set<Teacher> teacher;

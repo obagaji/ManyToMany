@@ -23,6 +23,8 @@ public class Teacher {
     private String teacherName;
     @Column(name = "teacher_class")
     private String teacherClass;
+    @Column(nullable = false)
+    private String teacherPassword;
     @ManyToMany(cascade = CascadeType.ALL,mappedBy = "teacher")
     private Set<Student> student;
 }
