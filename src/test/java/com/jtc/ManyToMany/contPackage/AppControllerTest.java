@@ -11,6 +11,7 @@ import com.jtc.ManyToMany.reposit.RepositTeacher;
 import com.jtc.ManyToMany.servicePackage.StudentTeacher;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -43,20 +45,12 @@ class AppControllerTest {
     MockMvc mockMvc;
 
     @MockBean
-    RepositStudent repositStudent;
-    @MockBean
-    RepositTeacher repositTeacher;
-
-    @MockBean
     StudentTeacher studentTeacher;
 
     Student student = new Student();
     Teacher teacher = new Teacher();
     @Autowired
-    private ObjectMapper objectMapper = new ObjectMapper();
-
-
-
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @Test
     void saveStudent() throws Exception {
         student.setStudentId(100L);
@@ -77,10 +71,36 @@ class AppControllerTest {
         MvcResult mvcResult = mockMvc.perform(requestBuilder)
                 .andExpect(result -> {result.getResponse().setStatus(HttpServletResponse.SC_ACCEPTED);})
                 .andReturn();
+    }
+
+
+    @DisplayName("Test for bad input of a variable")
+    @Test
+    void saveStudentWithoutPassword() throws Exception
+    {
+        student.setStudentId(1112L);
+        student.setStudentName("lucky");
+        teacher.setTeacherId(111L);
+        teacher.setTeacherClass("jss");
+        teacher.setTeacherName("john");
+        teacher.setTeacherPassword("password");
+        Set<Teacher> teacherSet = new HashSet<>();
+        teacherSet.add(teacher);
+        student.setTeacher(teacherSet);
+        Mockito.when(studentTeacher.savingStudent(student)).thenReturn(student);
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/student")
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(student));
+                MvcResult mvcResult = mockMvc.perform(requestBuilder)
+                        .andExpect(result -> result.getResponse().setStatus(HttpServletResponse.SC_BAD_REQUEST))
+                        .andReturn();
 
     }
 
+    @DisplayName(" testing retriving object")
     @Test
     void getStudent() {
+        Mockito.when(studentTeacher.gatSavedStudent()).thenReturn(new ArrayList<>());
     }
 }

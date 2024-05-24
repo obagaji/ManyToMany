@@ -29,4 +29,13 @@ public class StudentTeacher {
             return studentRepository.findAll();
     }
 
+    public void removeStudent(long idToRemove)
+    {
+        if ( studentRepository.existsById(idToRemove))
+        {
+            Student student = studentRepository.findById(idToRemove).orElseThrow();
+            studentRepository.delete(student);
+        }
+    }
+
 }
