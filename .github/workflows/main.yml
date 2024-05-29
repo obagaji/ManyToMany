@@ -1,0 +1,25 @@
+
+
+  on:
+    push:
+      branches:
+        - master
+  jobs:
+    publish:
+      name: Student Teachers Relationship
+      runs-on: ubuntu-latest
+      permissions:
+        contents: read
+        packages: write
+
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+
+        - name: Setup jdk 17
+          uses: actions/setup-java@v4
+
+        - name: Build Application
+          run: |
+            mvn clean
+            mvn -B package --file pom.xml
