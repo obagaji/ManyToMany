@@ -25,6 +25,10 @@ public class Teacher {
     private String teacherClass;
     @Column(nullable = false)
     private String teacherPassword;
+
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "teacher_userId")
+    private Users teacherUsers;
     @ManyToMany(cascade = CascadeType.ALL,mappedBy = "teacher")
     private Set<Student> student;
 }

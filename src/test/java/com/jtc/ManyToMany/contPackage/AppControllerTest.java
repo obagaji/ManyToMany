@@ -1,16 +1,11 @@
 package com.jtc.ManyToMany.contPackage;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jtc.ManyToMany.ManyToManyApplication;
-import com.jtc.ManyToMany.configClass.ManyToManyConfig;
 import com.jtc.ManyToMany.entity.Student;
 import com.jtc.ManyToMany.entity.Teacher;
-import com.jtc.ManyToMany.reposit.RepositStudent;
-import com.jtc.ManyToMany.reposit.RepositTeacher;
 import com.jtc.ManyToMany.servicePackage.StudentTeacher;
 import jakarta.servlet.http.HttpServletResponse;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -18,23 +13,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
 @WebMvcTest
 @ContextConfiguration(classes = ManyToManyApplication.class)
 @AutoConfigureMockMvc

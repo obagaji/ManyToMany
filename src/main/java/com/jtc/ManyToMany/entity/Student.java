@@ -23,6 +23,10 @@ public class Student {
     private String studentName;
     @Column(nullable = false)
     private String studentPassword;
+
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "student_userId")
+    private Users studentUser;
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = " student_teacher",joinColumns = {@JoinColumn(name = "student_id")},
             inverseJoinColumns = {@JoinColumn(name="teacher_id")})
