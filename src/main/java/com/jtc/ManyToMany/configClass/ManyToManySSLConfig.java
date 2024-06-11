@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ManyToManySSLConfig {
-/*
+
     @Bean
     public ServletWebServerFactory servletWebServerFactory()
     {
@@ -54,7 +54,7 @@ public class ManyToManySSLConfig {
 
         return connector;
 
-    }*/
+    }
 }
 
 
