@@ -33,12 +33,6 @@ public class AppController {
 
 
     private final StudentTeacher studentTeacher;
-    private final DaoAuthenticationProvider authProvider;
-    private final UserDetailClassService userDetailClassService;
-    private final JwtTokenGenerator generator;
-    private final AuthService authService;
-    private final ManyToManyMapper toManyMapper;
-    private final UsersRepository usersRepository;
 
     @PostMapping("/token")
     public ResponseEntity<String>testToken(@PathVariable("token") String token )
