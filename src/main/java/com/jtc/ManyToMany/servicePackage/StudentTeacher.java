@@ -34,6 +34,7 @@ public class StudentTeacher {
         if ( studentRepository.existsById(idToRemove))
         {
             Student student = studentRepository.findById(idToRemove).orElseThrow();
+
             studentRepository.delete(student);
         }
     }

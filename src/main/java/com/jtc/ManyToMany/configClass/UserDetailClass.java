@@ -25,14 +25,16 @@ public class UserDetailClass implements UserDetails {
 
     public UserDetailClass()
     {
-
     }
 
     public UserDetailClass(Users user)
     {
         userId = user.getUserId();
-        username = user.getUserName();
+
+        username = user.getUsername();
+
         userPassword = user.getUserPassword();
+
         authorityList = Arrays.stream(user.getRoles().split(""))
                 .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
@@ -100,4 +102,5 @@ public class UserDetailClass implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

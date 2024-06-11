@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -17,18 +18,20 @@ import java.util.Set;
 public class Teacher {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long teacherId;
-    @Column(name = "teacher_name",nullable = true)
-    private String teacherName;
-    @Column(name = "teacher_class")
-    private String teacherClass;
-    @Column(nullable = false)
-    private String teacherPassword;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+        private long teacherId;
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinColumn(name = "teacher_userId")
-    private Users teacherUsers;
+    @Column(name = "teacher_class")
+        private String teacherClass;
+
+    @OneToMany
+    @JoinColumn(name = "teacher_subject_id")
+        private List<Subject> teacherSubject;
+
     @ManyToMany(cascade = CascadeType.ALL,mappedBy = "teacher")
-    private Set<Student> student;
+        private Set<Student> student;
+
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(name = "teacher_userId")
+        private Users teacherUsers;
 }

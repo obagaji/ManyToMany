@@ -14,23 +14,21 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @Table(name = "student")
-public class Student {
+public class Student
+{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long studentId;
-    @Column(name = "student_name")
-    private String studentName;
-    @Column(nullable = false)
-    private String studentPassword;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+        private long studentId;
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinColumn(name = "student_userId")
-    private Users studentUser;
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = " student_teacher",joinColumns = {@JoinColumn(name = "student_id")},
             inverseJoinColumns = {@JoinColumn(name="teacher_id")})
-    private Set<Teacher> teacher;
+        private Set<Teacher> teacher;
+
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_userId")
+        private Users studentUser;
 
 
 }

@@ -24,10 +24,12 @@ public class JwtKeyService {
     {
         return extractClaim(token, Claims::getSubject);
     }
+
     public String extractIssuer(String token)
     {
         return extractClaim(token, Claims::getIssuer);
     }
+
     public String generateToken(UserDetailClass userDetailClass)
     {
         return Jwts
@@ -38,14 +40,17 @@ public class JwtKeyService {
                 .setSubject(userDetailClass.getUsername())
                 .compact();
     }
+
     public boolean isTokenExpired(String token)
     {
         if (new Date(System.currentTimeMillis()).compareTo(extractClaim(token,Claims::getExpiration))<0)
         {
             return true;
         }
+
         else return false;
     }
+
     public boolean isTokenValid(String token, UserDetailClass userDetailClass)
     {
         if (!isTokenExpired(token) &&
@@ -53,8 +58,10 @@ public class JwtKeyService {
         {
             return true;
         }
+
         else return false;
     }
+
     public String generateTokenWithClaim(Map<String, Object> cliams, UserDetailClass userDetailClass)
     {
         return Jwts
@@ -81,11 +88,12 @@ public class JwtKeyService {
                 .parseClaimsJwt(token)
                 .getBody();
 
-
     }
+
     private Key keySignature()
     {
         byte[] keyByte = Decoders.BASE64.decode(SECRET_KEY);
+
         return Keys.hmacShaKeyFor(keyByte);
     }
 

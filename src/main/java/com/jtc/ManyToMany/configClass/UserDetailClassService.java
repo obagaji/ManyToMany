@@ -15,9 +15,12 @@ import java.util.Optional;
 public class UserDetailClassService implements UserDetailsService {
     @Autowired
     private  UsersRepository usersRepository;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-       Optional<Users> users = usersRepository.findByUserName(username);
+
+        Optional<Users> users = usersRepository.findByUsername(username);
         return users.map(UserDetailClass::new).orElseThrow();
+
     }
 }

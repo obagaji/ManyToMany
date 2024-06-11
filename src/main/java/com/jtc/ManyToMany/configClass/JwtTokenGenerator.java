@@ -29,62 +29,81 @@ public class JwtTokenGenerator {
     public String createAccessToken(Authentication authentication)
     {
         Instant instant = Instant.now();
+
         Users users = (Users) authentication.getPrincipal();
+
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet
                 .builder()
                 .issuer("ManyToMany")
                 .issuedAt(instant)
                 .expiresAt(instant.plus(12, ChronoUnit.HOURS))
-                .subject(users.getUserName())
+                .subject(users.getUsername())
                 .build();
+
         return jwtEncode.encode(JwtEncoderParameters.from(jwtClaimsSet)).getTokenValue();
+
     }
+
     public String createRefreshToken(Authentication authentication)
     {
+
          Users users = (Users)authentication.getPrincipal();
+
          Instant instant = Instant.now();
+
          JwtClaimsSet jwtClaimsSet = JwtClaimsSet
                  .builder()
                  .issuer("ManyToMany")
                  .issuedAt(instant)
                  .expiresAt(instant.plus(6, ChronoUnit.HOURS))
-                 .subject(users.getUserName())
+                 .subject(users.getUsername())
                  .build();
+
          return jwtRefreshEncode.encode(JwtEncoderParameters.from(jwtClaimsSet)).getTokenValue();
     }
+
     public TokenDto createToken(Authentication authentication)
     {
-  /*      Users users = (Users) authentication.getPrincipal();*/
-        Instant now = Instant.now();
 
-        if (!(authentication.getPrincipal() instanceof Users users))
+        if (!(authentication.getPrincipal() instanceof Users ))
         {
-            throw new BadCredentialsException("not the required credentail");
+            throw new BadCredentialsException("not the required credential");
         }
 
         TokenDto tokenDto = new TokenDto();
+
         tokenDto.setAccessToken(createAccessToken(authentication));
-        tokenDto.setUserIdDto(((Users) authentication.getPrincipal()).getUserName());
+
+        tokenDto.setUserIdDto(((Users) authentication.getPrincipal()).getUsername());
 
         String refreshToken;
+
         if (authentication.getPrincipal() instanceof Jwt jwt)
         {
             Instant thisTime = Instant.now();
+
             Instant instant = jwt.getExpiresAt();
+
             Duration duration = Duration.between(thisTime,instant);
+
             long durationToDay = duration.toDays();
+
             if (durationToDay < 7)
             {
                 refreshToken = createRefreshToken(authentication);
             }
+
             else {
                 refreshToken = jwt.getTokenValue();
             }
         }
+
         else {
-            refreshToken=createRefreshToken(authentication);
+             refreshToken=createRefreshToken(authentication);
         }
+
         tokenDto.setRefreshToken(refreshToken);
+
         return tokenDto;
     }
 

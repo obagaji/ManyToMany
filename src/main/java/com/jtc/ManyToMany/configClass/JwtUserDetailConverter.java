@@ -11,9 +11,13 @@ import java.util.Collections;
 public class JwtUserDetailConverter implements Converter<Jwt, UsernamePasswordAuthenticationToken> {
     @Override
     public UsernamePasswordAuthenticationToken convert(Jwt source) {
+
             UserDetailClass userDetailClass = new UserDetailClass();
+
             userDetailClass.setUsername(source.getSubject());
+
             return new UsernamePasswordAuthenticationToken(userDetailClass,source, Collections.emptyList());
+
         }
 
 

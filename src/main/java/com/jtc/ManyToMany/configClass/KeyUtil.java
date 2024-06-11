@@ -27,16 +27,21 @@ public class KeyUtil
 {
 
     private final Environment environment;
+
     @Value("access-private.key")
     private String accessTokenPrivateKeyPath;
+
     @Value("access-public.key")
     private String accessTokenPublicKeyPath;
+
     @Value("refresh-public.key")
     private String refreshTokenPublicKeyPath;
+
     @Value("refresh-private.key")
     private String refreshTokenPrivateKeyPath;
 
     private KeyPair accessTokenkeyPair;
+
     private KeyPair refreshTokenKeyPair;
 
     public KeyPair getAccessTokenkeyPair()  {
@@ -45,62 +50,90 @@ public class KeyUtil
         {
             accessTokenkeyPair = getkeyPair(accessTokenPublicKeyPath,accessTokenPrivateKeyPath);
         }
+
         return accessTokenkeyPair;
     }
     
     public KeyPair getRefreshTokenKeyPair()  {
+
         if (Objects.isNull(refreshTokenKeyPair))
         {
             refreshTokenKeyPair = getkeyPair(refreshTokenPublicKeyPath,refreshTokenPrivateKeyPath);
         }
+
         return refreshTokenKeyPair;
     }
 
     private KeyPair getkeyPair(String publicKeyPath, String privateKeyPath)  {
+
         KeyPair keyPair;
+
         File  filePublic = new File(publicKeyPath);
+
         File filePrivate = new File(privateKeyPath);
 
         if (filePrivate.exists() && filePublic.exists())
         {
+
             try {
+
                 KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+
                 byte[] publicKeyByte = Files.readAllBytes(filePublic.toPath());
+
                 EncodedKeySpec encodedKeySpec = new X509EncodedKeySpec(publicKeyByte);
+
                 PublicKey publicKey = keyFactory.generatePublic(encodedKeySpec);
 
 
+
                 byte[] privatekeyByte = Files.readAllBytes(filePrivate.toPath());
+
                 PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(privatekeyByte);
+
                 PrivateKey privateKey = keyFactory.generatePrivate(spec);
+
                 keyPair = new KeyPair(publicKey, privateKey);
+
                 return keyPair;
 
-            }catch (InvalidKeySpecException| NoSuchAlgorithmException | IOException e)
+            }
+
+            catch (InvalidKeySpecException| NoSuchAlgorithmException | IOException e)
             {
                 throw new RuntimeException(e);
             }
 
         }
-        else{
+
+        else
+        {
             if(Arrays.stream(environment.getActiveProfiles()).anyMatch(e-> e.equals("prod")))
             {
                 throw new RuntimeException("public and private keys does not exist");
             }
         }
+
         File directory = new File("access-refresh-token-key");
+
         if (!directory.exists())
         {
             directory.mkdirs();
         }
-        try{
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(2048);
-        keyPair = keyPairGenerator.generateKeyPair();
+
+        try
+        {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+
+            keyPairGenerator.initialize(2048);
+
+            keyPair = keyPairGenerator.generateKeyPair();
 
 
             FileOutputStream fileOut = new FileOutputStream(publicKeyPath);
+
             X509EncodedKeySpec xSpec = new X509EncodedKeySpec(keyPair.getPublic().getEncoded());
+
             fileOut.write(xSpec.getEncoded());
         }
 
@@ -108,9 +141,13 @@ public class KeyUtil
         {
             throw new RuntimeException(e);
         }
-        try{
+
+        try
+        {
             FileOutputStream fileOutWrite = new FileOutputStream(privateKeyPath);
+
             PKCS8EncodedKeySpec pk8 = new PKCS8EncodedKeySpec(keyPair.getPrivate().getEncoded());
+
             fileOutWrite.write(pk8.getEncoded());
         }
         catch (IOException e)
@@ -128,6 +165,7 @@ public class KeyUtil
     {
         return (RSAPrivateKey) getAccessTokenkeyPair().getPrivate();
     }
+
     public RSAPublicKey getAccessRefreshPublicKey()  {
         return (RSAPublicKey) getRefreshTokenKeyPair().getPublic();
     }

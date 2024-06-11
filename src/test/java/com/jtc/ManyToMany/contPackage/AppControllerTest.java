@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jtc.ManyToMany.ManyToManyApplication;
 import com.jtc.ManyToMany.entity.Student;
 import com.jtc.ManyToMany.entity.Teacher;
+import com.jtc.ManyToMany.entity.Users;
 import com.jtc.ManyToMany.servicePackage.StudentTeacher;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -39,17 +40,19 @@ class AppControllerTest {
 
     Student student = new Student();
     Teacher teacher = new Teacher();
+    Users users = new Users();
+    Users usersTeacher = new Users();
     @Autowired
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Test
     void saveStudent() throws Exception {
         student.setStudentId(100L);
-        student.setStudentName("musa");
-        student.setStudentPassword(new BCryptPasswordEncoder().encode("password"));
+        users.setUsername("musa");
+        users.setUserPassword(new BCryptPasswordEncoder().encode("password"));
         teacher.setTeacherId(111L);
         teacher.setTeacherClass("jss");
-        teacher.setTeacherName("john");
-        teacher.setTeacherPassword("password");
+        usersTeacher.setUsername("john");
+        usersTeacher.setUserPassword("password");
         Set<Teacher> teacherSet = new HashSet<>();
         teacherSet.add(teacher);
         student.setTeacher(teacherSet);
@@ -69,11 +72,11 @@ class AppControllerTest {
     void saveStudentWithoutPassword() throws Exception
     {
         student.setStudentId(1112L);
-        student.setStudentName("lucky");
+        users.setUsername("lucky");
         teacher.setTeacherId(111L);
         teacher.setTeacherClass("jss");
-        teacher.setTeacherName("john");
-        teacher.setTeacherPassword("password");
+     /*   teacher.setTeacherName("john");
+        teacher.setTeacherPassword("password");*/
         Set<Teacher> teacherSet = new HashSet<>();
         teacherSet.add(teacher);
         student.setTeacher(teacherSet);

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -34,18 +35,26 @@ public class ManyToManyOauthConfig {
    private final KeyUtil keyUtil;
    private final JwtUserDetailConverter jwtUserDetailConverter;
    private final JwtFilter jwtFilter;
+   private final UserDetailClassService userDetailClassService;
 
 
 
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
        return  httpSecurity
-                .authorizeHttpRequests(authorize -> authorize.requestMatchers("/api").permitAll()
+                .authorizeHttpRequests(authorize -> authorize.requestMatchers("/register/**").permitAll()
                         .requestMatchers("/api/**").authenticated())
+
                 .formLogin(Customizer.withDefaults())
+
                 .oauth2ResourceServer(auth -> auth.jwt(jwt -> jwt.
-                        jwtAuthenticationConverter( new JwtUserDetailConverter())))
+                        jwtAuthenticationConverter( jwtUserDetailConverter)))
+
+               .formLogin(Customizer.withDefaults())
+
                 .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+
                 .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
                 .exceptionHandling((except)-> except.authenticationEntryPoint(new BasicAuthenticationEntryPoint())
                         .accessDeniedHandler(new BearerTokenAccessDeniedHandler()))
 
@@ -65,6 +74,7 @@ public class ManyToManyOauthConfig {
         return NimbusJwtDecoder.withPublicKey(
                 keyUtil.getAccessPublicKey()).build();
     }
+
     @Bean
     @Primary
     public JwtEncoder jwtEncoderAccessToken()
@@ -72,7 +82,9 @@ public class ManyToManyOauthConfig {
         JWK jwk = new RSAKey.Builder(keyUtil.getAccessPublicKey())
                 .privateKey(keyUtil.getAccessPrivateKey())
                 .build();
+
         JWKSource<SecurityContext> jwkSet = new ImmutableJWKSet<>(new JWKSet(jwk));
+
         return  new NimbusJwtEncoder(jwkSet);
     }
 
@@ -90,16 +102,30 @@ public class ManyToManyOauthConfig {
         JWK jwk = new RSAKey.Builder(keyUtil.getAccessRefreshPublicKey())
                 .privateKey(keyUtil.getAccessRefreshPrivateKey())
                 .build();
+
         JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(new JWKSet(jwk));
+
         return new NimbusJwtEncoder(jwkSource);
     }
+
     @Bean
     @Qualifier
     public JwtAuthenticationProvider jwtAuthenticationProvider()
     {
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwtDecoderRefreshToken());
+
         provider.setJwtAuthenticationConverter(jwtUserDetailConverter);
+
         return provider;
+    }
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider()
+    {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setUserDetailsService(userDetailClassService);
+        return daoAuthenticationProvider;
     }
 
 }

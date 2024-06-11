@@ -1,8 +1,11 @@
 package com.jtc.ManyToMany.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,10 +15,13 @@ import lombok.NoArgsConstructor;
 @Data
 public class Users {
 
-
     @Id
-    private long userId;
-    private String userName;
-    private String userPassword;
-    private String roles;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+        private long userId;
+
+        private String username;
+
+        private String userPassword;
+
+        private String roles;
 }
